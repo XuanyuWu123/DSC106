@@ -1,0 +1,57 @@
+<html>
+   <head>
+      <title>Highcharts</title>
+      <!-- <script src="https://code.highcharts.com/highcharts.js"></script> -->
+      <script src="https://code.highcharts.com/highcharts.src.js"></script>
+      <script src="https://code.highcharts.com/modules/series-label.js"></script>
+      <script src="https://code.highcharts.com/modules/exporting.js"></script>
+      <script src="https://code.highcharts.com/modules/export-data.js"></script>
+      <script src="https://code.highcharts.com/modules/data.js"></script>
+   </head>
+   
+   <body>
+      <div id="container"></div>
+      <script>
+      Highcharts.chart('container', {
+         chart:{
+            type: 'line'
+         },
+         title: {
+             text: 'UCSD Fulltime Men vs. Women Applied'
+         },
+     
+         xAxis: {
+            title: {
+                 text: 'Year'
+             }
+         },
+         yAxis: {
+             title: {
+                 text: 'Number of Students'
+             }
+         },
+         legend: {
+             layout: 'vertical',
+             align: 'right',
+             verticalAlign: 'middle'
+         },
+     
+         plotOptions: {
+            line:{
+               dataLabels:{
+                  enabled: true
+               }
+            }
+         },
+
+         data: {
+            csvURL:"http://127.0.0.1:5500/admission.csv",
+            startColumn: 0,
+            endColumn:2
+         }
+     });
+   </script>
+   </body>
+   
+</html>
+

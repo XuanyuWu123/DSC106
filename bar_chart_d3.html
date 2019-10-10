@@ -1,0 +1,102 @@
+<meta charset="utf-8">
+<style> 
+
+.bar { fill: steelblue; }
+
+</style>
+<body>    	
+<script src="//d3js.org/d3.v5.min.js"></script>
+<script>
+// var data = [{"year":2018,"fulltime_men_applied":45636},{"year":2017,"fulltime_men_applied":42636},{"year":2016,"fulltime_men_applied":45236},
+// {"year":2015,"fulltime_men_applied":40636},{"year":2014,"fulltime_men_applied":43636},{"year":2013,"fulltime_men_applied":44636}];
+
+
+d3.csv("admission.csv").then((data) =>{
+  return data.map((d) =>{
+    d.year = d.year,
+    d.fulltime_men_applied = parseInt(d.fulltime_men_applied.replace(/,/g,""));
+    d.fulltime_men_admitted = parseInt(d.fulltime_men_admitted.replace(/,/g,""));
+    d.fulltime_men_enrolled = parseInt(d.fulltime_men_enrolled.replace(/,/g,""));
+    d.fulltime_women_applied = parseInt(d.fulltime_women_applied.replace(/,/g,""));
+    d.fulltime_women_admitted = parseInt(d.fulltime_women_admitted.replace(/,/g,""));
+    d.fulltime_women_enrolled = parseInt(d.fulltime_women_enrolled.replace(/,/g,""));
+    return d;
+
+  });
+}).then((data) =>{
+  console.log(data[0])
+
+
+// set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// set the ranges
+var y = d3.scaleBand()
+          .range([height, 0])
+          .padding(0.1);
+
+var x = d3.scaleLinear()
+          .range([0, width]);
+          
+// append the svg object to the body of the page
+// append a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top  + ")");
+
+  // format the data
+  data.forEach(function(d) {
+    d.year = +d.year;
+    d.applied = +d.fulltime_men_applied;
+  });
+
+  // Scale the range of the data in the domains
+  x.domain([0, d3.max(data, function(d){ return d.fulltime_men_applied; })])
+  y.domain(data.map(function(d) { return d.year; }));
+  //y.domain([0, d3.max(data, function(d) { return d.sales; })]);
+
+  // append the rectangles for the bar chart
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      //.attr("x", function(d) { return x(d.sales); })
+      .attr("width", function(d) {return x(d.fulltime_men_applied); } )
+      .attr("y", function(d) { return y(d.year); })
+      .attr("height", y.bandwidth());
+
+  // add the x Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  // add the y Axis
+  svg.append("g")
+      .call(d3.axisLeft(y));
+  
+  svg.append("text")
+        .attr("x", width/4)             
+        .attr("y", 3)
+        .style("font-size", "30px") 
+        .text("Fulltime Men Applied by Year");
+
+    svg.append("text")
+        .attr("x", width - 120)             
+        .attr("y", height + 30)
+        .style("font-size", "15px") 
+        .text("Number of Students");
+
+    svg.append("text")
+        .attr("x", -40)             
+        .attr("y", 0)
+        .style("font-size", "15px") 
+        .text("Year");
+    });
+</script>
+</body>
